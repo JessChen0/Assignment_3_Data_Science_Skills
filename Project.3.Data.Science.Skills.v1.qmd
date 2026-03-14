@@ -1,6 +1,6 @@
 ---
 title: "Project.3.Data.Science.Skills"
-author: "Ciara Bonn, Jess Chen, Muhammad Ahmad, Nana Danquah"
+author: "Ciara Bonn, Jess Chen, Muhammad Ahmad, Nana Kwasi Danquah"
 format: gfm
 editor: visual
 ---
@@ -9,7 +9,7 @@ editor: visual
 
 ## Team Members:
 
-Ciara Bonn, Jess Chen, Muhammad Ahmad, Nana Danquah
+Ciara Bonn, Jess Chen, Muhammad Ahmad, Nana Kwasi Danquah
 
 ## Approach
 
