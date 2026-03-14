@@ -1,0 +1,24 @@
+---
+title: "Project.3.Data.Science.Skills"
+author: "Ciara Bonn, Jess Chen, Muhammad Ahmad, Nana Danquah"
+format: gfm
+editor: visual
+---
+
+# Project 3 \| Data Science \| Most Valued Skills
+
+## Team Members:
+
+Ciara Bonn, Jess Chen, Muhammad Ahmad, Nana Danquah
+
+## Approach
+
+We will investigate which data science skills are most valued by analyzing LinkedIn job posting data from Kaggle. We will use postings.csv, job_skills.csv, and skills.csv to identify the skills requested in data-science-related job postings. In R, we will filter the data to relevant roles, clean missing or duplicate values, join the tables by job and skill identifiers, and store the results in normalized relational tables. We will then perform exploratory analysis to rank the most frequently requested skills and visualize the results with charts.
+
+As a team, we will utilize our slack channel as our primary form of communication and a team github repo to store working files. We will update file names with versions numbers to manage version control.
+
+## Potential Datasets:
+
+<https://www.kaggle.com/datasets/arshkon/linkedin-job-postings>\
+<https://www.kaggle.com/datasets/asaniczka/1-3m-linkedin-jobs-and-skills-2024>\
+<https://www.kaggle.com/datasets/mann14/global-ai-and-data-science-job-market-20202026?select=country_ai_trends.csv>
