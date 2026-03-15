@@ -1,0 +1,34 @@
+---
+title: "Project.3.Data.Science.Skills"
+author: "Ciara Bonnet, Jess Chen, Muhammad Ahmad, Nana Kwasi Danquah, Theresa Benny"
+format: gfm
+editor: visual
+---
+
+# Project 3 \| Data Science \| Most Valued Skills
+
+## Team Members:
+
+Ciara Bonnet, Jess Chen, Muhammad Ahmad, Nana Kwasi Danquah, Theresa Benny
+
+## Approach
+
+Our group will investigate which data science skills are most valued using two main files from our dataset: ai_jobs.csv and skills_demand.csv. The ai_jobs.csv file contains job-level information such as title, industry, location, experience level, and salary range. The skills_demand.csv file contains skill information linked to each job by job_id. We will load both files into R, clean the data, check for missing values and duplicates, and join the tables using job_id.
+
+For our normalized database design, we will organize the data into three tables: jobs, skills, and job_skills. The jobs table will store one row per job posting, the skills table will store one row per unique skill, and the job_skills table will connect jobs to skills. This design reduces repeated data and supports our analysis of which skills appear most often in relevant jobs.
+
+As a team, we will utilize our slack channel as our primary form of communication and a team github repo to store working files. We will update file names with versions numbers to manage version control.
+
+## ER Diagram Potential Data sets:
+
+![](images/ER_Diagram.png)
+
+Primary keys are the job_ids.
+
+primary data sets:\
+<https://www.kaggle.com/datasets/mann14/global-ai-and-data-science-job-market-20202026?select=country_ai_trends.csv>
+
+possible data sets to support primary:
+
+<https://www.kaggle.com/datasets/arshkon/linkedin-job-postings>\
+<https://www.kaggle.com/datasets/asaniczka/1-3m-linkedin-jobs-and-skills-2024>
