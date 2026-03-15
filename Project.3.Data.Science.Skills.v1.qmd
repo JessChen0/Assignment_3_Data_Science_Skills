@@ -19,7 +19,7 @@ As a team, we will utilize our slack channel as our primary form of communicatio
 
 ## ER Diagram Potential Data sets:
 
-![](images/image (1).png)
+![](images/ER_Diagram.png)
 
 Primary keys are the job_ids.
 
