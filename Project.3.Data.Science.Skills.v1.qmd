@@ -17,8 +17,16 @@ We will investigate which data science skills are most valued by analyzing Linke
 
 As a team, we will utilize our slack channel as our primary form of communication and a team github repo to store working files. We will update file names with versions numbers to manage version control.
 
-## Potential Datasets:
+## ER Diagram Potential Data sets:
+
+![](images/image (1).png)
+
+Primary keys are the job_ids.
+
+primary data sets:\
+<https://www.kaggle.com/datasets/mann14/global-ai-and-data-science-job-market-20202026?select=country_ai_trends.csv>
+
+possible data sets to support primary:
 
 <https://www.kaggle.com/datasets/arshkon/linkedin-job-postings>\
-<https://www.kaggle.com/datasets/asaniczka/1-3m-linkedin-jobs-and-skills-2024>\
-<https://www.kaggle.com/datasets/mann14/global-ai-and-data-science-job-market-20202026?select=country_ai_trends.csv>
+<https://www.kaggle.com/datasets/asaniczka/1-3m-linkedin-jobs-and-skills-2024>
