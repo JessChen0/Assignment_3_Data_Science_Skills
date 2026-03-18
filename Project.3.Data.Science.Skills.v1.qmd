@@ -30,3 +30,17 @@ possible data sets to support primary:
 
 <https://www.kaggle.com/datasets/arshkon/linkedin-job-postings>\
 <https://www.kaggle.com/datasets/asaniczka/1-3m-linkedin-jobs-and-skills-2024>
+
+### Data cleaning by Muhammad Ahmad and Nana Kwasi Danquah
+
+# Load the data
+
+```{r}
+library(dplyr)
+library(ggplot2)
+```
+
+```{r}
+
+
+```
