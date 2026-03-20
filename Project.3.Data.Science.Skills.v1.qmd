@@ -1,6 +1,6 @@
 ---
 title: "Project.3.Data.Science.Skills"
-author: "Ciara Bonn, Jess Chen, Muhammad Ahmad, Nana Kwasi Danquah"
+author: "Ciara Bonnet, Jess Chen, Muhammad Ahmad, Nana Kwasi Danquah, Theresa Benny"
 format: gfm
 editor: visual
 ---
@@ -9,17 +9,19 @@ editor: visual
 
 ## Team Members:
 
-Ciara Bonn, Jess Chen, Muhammad Ahmad, Nana Kwasi Danquah
+Ciara Bonnet, Jess Chen, Muhammad Ahmad, Nana Kwasi Danquah, Theresa Benny
 
 ## Approach
 
-We will investigate which data science skills are most valued by analyzing LinkedIn job posting data from Kaggle. We will use postings.csv, job_skills.csv, and skills.csv to identify the skills requested in data-science-related job postings. In R, we will filter the data to relevant roles, clean missing or duplicate values, join the tables by job and skill identifiers, and store the results in normalized relational tables. We will then perform exploratory analysis to rank the most frequently requested skills and visualize the results with charts.
+Our group will investigate which data science skills are most valued using two main files from our dataset: ai_jobs.csv and skills_demand.csv. The ai_jobs.csv file contains job-level information such as title, industry, location, experience level, and salary range. The skills_demand.csv file contains skill information linked to each job by job_id. We will load both files into R, clean the data, check for missing values and duplicates, and join the tables using job_id.
+
+For our normalized database design, we will organize the data into three tables: jobs, skills, and job_skills. The jobs table will store one row per job posting, the skills table will store one row per unique skill, and the job_skills table will connect jobs to skills. This design reduces repeated data and supports our analysis of which skills appear most often in relevant jobs.
 
 As a team, we will utilize our slack channel as our primary form of communication and a team github repo to store working files. We will update file names with versions numbers to manage version control.
 
 ## ER Diagram Potential Data sets:
 
-![](images/ER_Diagram.png)
+![ER Diagram](images/ER_Diagram.png)
 
 Primary keys are the job_ids.
 
@@ -46,16 +48,15 @@ library(tidyr)
 data_jobs_raw <- read.csv("https://raw.githubusercontent.com/JessChen0/Assignment_3_Data_Science_Skills/refs/heads/main/ai_jobs.csv")
 
 skills_raw <- read.csv("https://raw.githubusercontent.com/JessChen0/Assignment_3_Data_Science_Skills/refs/heads/main/skills_demand.csv")
-
-data_jobs
 ```
-Based on the summary there are no big errors or weirdly small or large numbers.
-# Check for null or missing rows
+
+Based on the summary there are no big errors or weirdly small or large numbers. \# Check for null or missing rows
 
 ```{r}
 vis_miss(data_jobs_raw)
 vis_miss(skills_raw)
 ```
+
 Heat maps to check for any missing values. There are no missing values in this data set.
 
 # Filiter the data sets by country (we just want USA)
@@ -64,14 +65,15 @@ Heat maps to check for any missing values. There are no missing values in this d
 data_jobs_filtered <- data_jobs_raw %>% filter(country =="USA") 
 
 data_jobs_USA <- data_jobs_filtered %>% select(-country)
-data_jobs_USA
+glimpse(data_jobs_USA)
 ```
+
 Filtered for "USA" then got rid of the column since it is not necessary anymore
 
 # Converting skills from long to wide
 
 ```{R}
-skills_wide <- skills %>%
+skills_wide <- skills_raw %>%
   pivot_wider(
     id_cols  = job_id,
     names_from = skill,
@@ -80,6 +82,7 @@ skills_wide <- skills %>%
 
 skills_wide
 ```
+
 Here is the wide version of skills I thought this will be the best way to go about it because now we can do numerical operations more conveniently and without having to make a column for every skill level.
 
 # Combining them into a new table
@@ -97,6 +100,5 @@ jobs_skills <- data_jobs_USA %>%
 ```
 
 ```{r}
-jobs_skills
+glimpse(jobs_skills)
 ```
-
