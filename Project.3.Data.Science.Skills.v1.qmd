@@ -21,12 +21,11 @@ As a team, we will utilize our slack channel as our primary form of communicatio
 
 ## ER Diagram Potential Data sets:
 
-![ER Diagram](images/ER_Diagram.png)
+![](https://raw.githubusercontent.com/JessChen0/Assignment_3_Data_Science_Skills/main/images/ER_Diagram.png)
 
 Primary keys are the job_ids.
 
-primary data sets:\
-<https://www.kaggle.com/datasets/mann14/global-ai-and-data-science-job-market-20202026?select=country_ai_trends.csv>
+primary data sets: <https://www.kaggle.com/datasets/mann14/global-ai-and-data-science-job-market-20202026?select=country_ai_trends.csv>
 
 possible data sets to support primary:
 
@@ -42,6 +41,7 @@ library(dplyr)
 library(ggplot2)
 library(naniar)
 library(tidyr)
+library(knitr)
 ```
 
 ```{r}
@@ -101,4 +101,120 @@ jobs_skills <- data_jobs_USA %>%
 
 ```{r}
 glimpse(jobs_skills)
+```
+
+# Analysis
+
+### Most popular skills 2020 vs. 2025
+
+The below compares the most "requested" skills, according to linkedIn job postings in 2020 and 2025. SQL and TensorFlow skills were tied for most valuable in 2020 but "Computer Vision" and Azure have now become tied for most popular.
+
+```{r}
+all_skills <- c("R","Computer Vision","NLP","SQL","Python","AWS","Azure","GCP","PyTorch","Scikit-learn","TensorFlow")
+
+plot_popular_skill <- function(jobs_skills,selected_year) {
+
+summary_skills <- jobs_skills %>%
+  filter(posted_year == selected_year) %>%
+  summarise(across(all_of(all_skills), ~sum(!is.na(.)))) %>%
+  pivot_longer(cols = everything(),
+               names_to = "column",
+               values_to = "count") %>%
+  mutate (
+    total = sum(count),
+    percentage = count / total * 100
+  ) %>%
+  arrange(desc(count)) %>%
+  mutate(column=factor(column,levels = column))
+
+
+#plot
+
+ggplot(summary_skills, aes(x = column, y = count)) +
+  geom_col(fill = "lightskyblue") +
+  geom_text(
+    aes(label = sprintf("%.1f%%", percentage)),
+    hjust = -.5, size = 3.2
+  ) +
+  scale_x_discrete(guide = guide_axis(angle = 45)) +
+  scale_y_continuous(expand = expansion(mult = c(0, 0.15))) +  # headroom for labels
+  coord_flip() +
+  labs(
+    title    = paste("Most Popular Skills", selected_year),
+    subtitle = "Ranked by number of times a skill is requested in job post",
+    x        = NULL,
+    y        = "Number of job posts asking for skill"
+  ) +
+  theme_minimal(base_size = 13) +
+  theme(
+    plot.title    = element_text(face = "bold"),
+    panel.grid.major.x = element_blank()
+  )
+}
+  
+plot_popular_skill(jobs_skills,2020)
+plot_popular_skill(jobs_skills,2025)
+```
+
+## Skills by City/Location
+
+```{r}
+
+jobs_skills %>%
+  filter(posted_year %in% c(2025, 2026)) %>%
+  count(city, name = "city_count") %>%
+  arrange(desc(city_count)) %>%
+  slice_head(n = 5) %>%
+  kable(col.names = c("Location", "Number of Job Listings"), caption = "Top 5 Data Sci & AI Hiring Cities/Locations in 2025/26")
+
+
+```
+
+## Top skills associated with higher pay
+
+```{r}
+
+plot_highsalary_skills <- function(data) {
+  
+  # calculate the 75th percentile salary threshold
+  salary_threshold <- quantile(data$avg_salary, 0.75, na.rm = TRUE)
+  
+  highsalary_summary <- data %>%
+    filter(avg_salary >= salary_threshold) %>%
+    summarise(across(all_of(all_skills), ~ sum(!is.na(.)))) %>%
+    pivot_longer(cols = everything(),
+                 names_to  = "column",
+                 values_to = "count") %>%
+    mutate(
+      total      = sum(count),
+      percentage = count / total * 100
+    ) %>%
+    arrange(desc(count)) %>%
+    mutate(column = factor(column, levels = column))
+  
+  ggplot(highsalary_summary, aes(x = column, y = count)) +
+    geom_col(fill = "thistle") +
+    geom_text(
+      aes(label = sprintf("%.1f%%", percentage)),
+      hjust = -0.1, size = 3.2
+    ) +
+    scale_y_continuous(expand = expansion(mult = c(0, 0.2))) +
+    coord_flip() +
+    labs(
+      title    = "In Demand Skills for Top 25% Paying Jobs",
+      subtitle = paste0("Data for", nrow(filter(data, avg_salary >= salary_threshold)), 
+                        " jobs | Salary threshold: $", round(salary_threshold, 0)),
+      x        = NULL,
+      y        = "Number of times skill requested in job post"
+    ) +
+    theme_minimal(base_size = 13) +
+    theme(
+      plot.title         = element_text(face = "bold"),
+      panel.grid.major.y = element_blank()
+    )
+}
+
+# ── CALL ──────────────────────────────────────────────────────────────────────
+plot_highsalary_skills(jobs_skills)
+
 ```
