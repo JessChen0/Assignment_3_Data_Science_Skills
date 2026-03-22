@@ -7,15 +7,17 @@ editor: visual
 
 # Project 3 \| Data Science \| Most Valued Skills
 
-## Team Members:
+# Team Members:
 
 Ciara Bonnet, Jess Chen, Muhammad Ahmad, Nana Kwasi Danquah, Theresa Benny
 
-## Approach
+# Introduction
 
-Our group will investigate which data science skills are most valued using two main files from our dataset: ai_jobs.csv and skills_demand.csv. The ai_jobs.csv file contains job-level information such as title, industry, location, experience level, and salary range. The skills_demand.csv file contains skill information linked to each job by job_id. We will load both files into R, clean the data, check for missing values and duplicates, and join the tables using job_id.
+To assess "the most valued skills in data science", our team recognized it is important to first define value, as this could lead to various interpretations. Ultimately, we wanted to take the perspective of Data Science students (as we are!) and job seekers to define value as most sought after or highest paid skills.
 
-For our normalized database design, we will organize the data into three tables: jobs, skills, and job_skills. The jobs table will store one row per job posting, the skills table will store one row per unique skill, and the job_skills table will connect jobs to skills. This design reduces repeated data and supports our analysis of which skills appear most often in relevant jobs.
+With this narrower definition, we chose the "[Global AI & Data Science Job Market (2020-2026)](https://www.kaggle.com/datasets/mann14/global-ai-and-data-science-job-market-20202026?select=country_ai_trends.csv)" from Kaggle. This dataset is sourced from LinkedIn which is a well recognized global source for job postings and we liked that it contains data from several years, salary information and AI roles.
+
+We investigated which data science skills are most valued using two main files from our dataset: **ai_jobs.csv** and **skills_demand.csv**. The ai_jobs.csv file contains job-level information such as title, industry, location, experience level, and salary range. The skills_demand.csv file contains skill information linked to each job by job_id. We loaded both files into R, cleaned the data, checked for missing values and duplicates, and joined the tables using job_id as the primary key. (see ER Diagram below for details)
 
 As a team, we will utilize our slack channel as our primary form of communication and a team github repo to store working files. We will update file names with versions numbers to manage version control.
 
@@ -23,18 +25,9 @@ As a team, we will utilize our slack channel as our primary form of communicatio
 
 ![](https://raw.githubusercontent.com/JessChen0/Assignment_3_Data_Science_Skills/main/images/ER_Diagram.png)
 
-Primary keys are the job_ids.
+# Data Loading/Cleaning and Transformation
 
-primary data sets: <https://www.kaggle.com/datasets/mann14/global-ai-and-data-science-job-market-20202026?select=country_ai_trends.csv>
-
-possible data sets to support primary:
-
-<https://www.kaggle.com/datasets/arshkon/linkedin-job-postings>\
-<https://www.kaggle.com/datasets/asaniczka/1-3m-linkedin-jobs-and-skills-2024>
-
-### Data cleaning by Muhammad Ahmad and Nana Kwasi Danquah
-
-# Load the data
+We posted the raw data tables into github and loaded them below. Checking for errors and large numbers.
 
 ```{r}
 library(dplyr)
@@ -48,6 +41,7 @@ library(knitr)
 data_jobs_raw <- read.csv("https://raw.githubusercontent.com/JessChen0/Assignment_3_Data_Science_Skills/refs/heads/main/ai_jobs.csv")
 
 skills_raw <- read.csv("https://raw.githubusercontent.com/JessChen0/Assignment_3_Data_Science_Skills/refs/heads/main/skills_demand.csv")
+
 ```
 
 Based on the summary there are no big errors or weirdly small or large numbers. \# Check for null or missing rows
@@ -59,7 +53,7 @@ vis_miss(skills_raw)
 
 Heat maps to check for any missing values. There are no missing values in this data set.
 
-# Filiter the data sets by country (we just want USA)
+### Filter the data sets by country (we just want USA)
 
 ```{r}
 data_jobs_filtered <- data_jobs_raw %>% filter(country =="USA") 
@@ -70,7 +64,7 @@ glimpse(data_jobs_USA)
 
 Filtered for "USA" then got rid of the column since it is not necessary anymore
 
-# Converting skills from long to wide
+### Converting skills from long to wide
 
 ```{R}
 skills_wide <- skills_raw %>%
@@ -85,7 +79,7 @@ skills_wide
 
 Here is the wide version of skills I thought this will be the best way to go about it because now we can do numerical operations more conveniently and without having to make a column for every skill level.
 
-# Combining them into a new table
+### Combining them into a new table
 
 ```{r}
 
@@ -103,29 +97,31 @@ jobs_skills <- data_jobs_USA %>%
 glimpse(jobs_skills)
 ```
 
-# Analysis
+# Data Analysis
 
 ### Most popular skills 2020 vs. 2025
 
 The below compares the most "requested" skills, according to linkedIn job postings in 2020 and 2025. SQL and TensorFlow skills were tied for most valuable in 2020 but "Computer Vision" and Azure have now become tied for most popular.
 
 ```{r}
+# define the columns to call out later
 all_skills <- c("R","Computer Vision","NLP","SQL","Python","AWS","Azure","GCP","PyTorch","Scikit-learn","TensorFlow")
 
+# define a function
 plot_popular_skill <- function(jobs_skills,selected_year) {
 
 summary_skills <- jobs_skills %>%
   filter(posted_year == selected_year) %>%
-  summarise(across(all_of(all_skills), ~sum(!is.na(.)))) %>%
-  pivot_longer(cols = everything(),
+  summarise(across(all_of(all_skills), ~sum(!is.na(.)))) %>% #sums each skill column that isn't empty
+  pivot_longer(cols = everything(), #turns to long for ggplot
                names_to = "column",
                values_to = "count") %>%
   mutate (
     total = sum(count),
-    percentage = count / total * 100
+    percentage = count / total * 100  #counts total number of mentions and calculates %
   ) %>%
   arrange(desc(count)) %>%
-  mutate(column=factor(column,levels = column))
+  mutate(column=factor(column,levels = column))  # lock cells in order
 
 
 #plot
@@ -136,7 +132,7 @@ ggplot(summary_skills, aes(x = column, y = count)) +
     aes(label = sprintf("%.1f%%", percentage)),
     hjust = -.5, size = 3.2
   ) +
-  scale_x_discrete(guide = guide_axis(angle = 45)) +
+  scale_x_discrete(guide = guide_axis(angle = 45)) +  # tilts labels
   scale_y_continuous(expand = expansion(mult = c(0, 0.15))) +  # headroom for labels
   coord_flip() +
   labs(
@@ -148,15 +144,35 @@ ggplot(summary_skills, aes(x = column, y = count)) +
   theme_minimal(base_size = 13) +
   theme(
     plot.title    = element_text(face = "bold"),
-    panel.grid.major.x = element_blank()
+    panel.grid.major.x = element_blank()  # removes grid lines
   )
 }
-  
+
+
+#Run full functions for 2020 and 2025  
 plot_popular_skill(jobs_skills,2020)
 plot_popular_skill(jobs_skills,2025)
 ```
 
-## Skills by City/Location
+Unfortunately, some of the job postings did not have matching skillsets called out in the skills database.
+
+```{r}
+ 
+Total_jobs <- jobs_skills %>% filter(posted_year == 2020) %>% nrow()
+cat("Total jobs captured in 2020:", Total_jobs)
+cat("\n")
+cat("Total non-NA entries in 2020:", summary_skills$total[1])
+cat("\n")
+cat("\n")
+Total_jobs <- jobs_skills %>% filter(posted_year == 2025) %>% nrow()
+cat("Total jobs captured in 2025:", Total_jobs)
+cat("\n")
+cat("Total non-NA entries in 2025:", summary_skills$total[1])
+```
+
+### Skills by city/location
+
+We also wanted to look at which cities are attracting the most jobs since 2025. Not surprisingly, "remote" is the most common hiring location. Interestingly, the other top 4 cities are hiring at similar paces.
 
 ```{r}
 
@@ -170,7 +186,9 @@ jobs_skills %>%
 
 ```
 
-## Top skills associated with higher pay
+### Top skills associated with higher pay
+
+As we also defined value as high paying jobs/skill sets, we also looked at most popular skillsets associated with the top 25% highest paying roles. We wrote the function to have flexibility in threshold so we can see how these stats change for different percentiles (e.g., top 20% highest paying roles, top 50%, etc.)
 
 ```{r}
 
@@ -180,7 +198,7 @@ plot_highsalary_skills <- function(data) {
   salary_threshold <- quantile(data$avg_salary, 0.75, na.rm = TRUE)
   
   highsalary_summary <- data %>%
-    filter(avg_salary >= salary_threshold) %>%
+    filter(avg_salary >= salary_threshold) %>%   #filter by threshold
     summarise(across(all_of(all_skills), ~ sum(!is.na(.)))) %>%
     pivot_longer(cols = everything(),
                  names_to  = "column",
@@ -202,7 +220,7 @@ plot_highsalary_skills <- function(data) {
     coord_flip() +
     labs(
       title    = "In Demand Skills for Top 25% Paying Jobs",
-      subtitle = paste0("Data for", nrow(filter(data, avg_salary >= salary_threshold)), 
+      subtitle = paste0("Data for ", nrow(filter(data, avg_salary >= salary_threshold)), 
                         " jobs | Salary threshold: $", round(salary_threshold, 0)),
       x        = NULL,
       y        = "Number of times skill requested in job post"
@@ -214,7 +232,16 @@ plot_highsalary_skills <- function(data) {
     )
 }
 
-# ── CALL ──────────────────────────────────────────────────────────────────────
-plot_highsalary_skills(jobs_skills)
+plot_highsalary_skills(jobs_skills)   # call function
 
 ```
+
+# Constraints and Conclusion
+
+During our data transformation & early analysis, we realized that many of the 8000 job roles in this database did not contain matching skills data in the "skills" database. For example, of the 1188 job postings listed in 2020, only 225 had associated skills data when we connected the two datasets. We hypothesize some job postings did not contain relevant information or the skills database is incomplete. That said, we considered alternatives such as generating "skills" for missing rows based on the data we already have, however this would result in essentially the same results. Ultimately, we decided to use the data we had and that there was still enough information to convey interesting insights and conclusions.
+
+In conclusion, our project used job posting data to explore which data science skills are most valued. By connecting jobs to skills through a normalized relational design and analyzing the data in R, we can identify the most frequently requested skills and compare patterns across job characteristics such as year, role, and salary. Based on our findings, there is a slight shift from requesting coding skills such as R, towards Azure and Computer Vision. That said, R is still among the skills requested for higher paying positions, on average. And no surprise, "remote" is the most popular working location for data science job roles.
+
+# Sources
+
+Claude. (2026). Anthropic \[Large language model\]. Accessed Mar 20, 2026. [Chat](https://claude.ai/share/e92532a8-a864-4307-b225-fc3a30b9a565)
