@@ -97,7 +97,54 @@ jobs_skills <- data_jobs_USA %>%
 glimpse(jobs_skills)
 ```
 
-# Data Analysis
+# Data Analysis 
+
+### Top 6 Job Titles in the U.S
+
+{r}
+library(dplyr)
+library(gt)
+library(scales)
+
+top_titles <- jobs_skills %>%
+  count(job_title, name = "num_postings") %>%
+  arrange(desc(num_postings)) %>%
+  slice_head(n = 25) %>%
+  mutate(rank = row_number()) %>%
+  select(rank, job_title, num_postings)   # 👈 move column here instead
+
+top_titles %>%
+  gt() %>%
+  cols_label(
+    rank = "Rank",
+    job_title = "Job Title",
+    num_postings = "Number of Postings"
+  ) %>%
+  tab_header(
+    title = "Top 6 Job Titles in the U.S.",
+    subtitle = "Based on AI & Data Science Job Listings"
+  ) %>%
+  fmt_number(
+    columns = num_postings,
+    decimals = 0,
+    use_seps = TRUE
+  ) %>%
+  data_color(
+    columns = num_postings,
+    colors = col_numeric(
+      palette = c("lightblue", "darkblue"),
+      domain = NULL
+    )
+  ) %>%
+  cols_align(
+    align = "center",
+    columns = c(rank, num_postings)
+  ) %>%
+  tab_options(
+    table.font.size = px(13),
+    heading.title.font.size = px(18),
+    heading.subtitle.font.size = px(13)
+  )
 
 ### Most popular skills 2020 vs. 2025
 
