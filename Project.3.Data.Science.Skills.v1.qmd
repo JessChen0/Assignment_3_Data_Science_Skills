@@ -97,54 +97,16 @@ jobs_skills <- data_jobs_USA %>%
 glimpse(jobs_skills)
 ```
 
-# Data Analysis 
+# Data Analysis
 
 ### Top 6 Job Titles in the U.S
 
-{r}
-library(dplyr)
-library(gt)
-library(scales)
+{r} library(dplyr) library(gt) library(scales)
 
-top_titles <- jobs_skills %>%
-  count(job_title, name = "num_postings") %>%
-  arrange(desc(num_postings)) %>%
-  slice_head(n = 25) %>%
-  mutate(rank = row_number()) %>%
-  select(rank, job_title, num_postings)   # 👈 move column here instead
+top_titles \<- jobs_skills %\>% count(job_title, name = "num_postings") %\>% arrange(desc(num_postings)) %\>% slice_head(n = 25) %\>% mutate(rank = row_number()) %\>% select(rank, job_title, num_postings) \# 👈 move column here instead
 
-top_titles %>%
-  gt() %>%
-  cols_label(
-    rank = "Rank",
-    job_title = "Job Title",
-    num_postings = "Number of Postings"
-  ) %>%
-  tab_header(
-    title = "Top 6 Job Titles in the U.S.",
-    subtitle = "Based on AI & Data Science Job Listings"
-  ) %>%
-  fmt_number(
-    columns = num_postings,
-    decimals = 0,
-    use_seps = TRUE
-  ) %>%
-  data_color(
-    columns = num_postings,
-    colors = col_numeric(
-      palette = c("lightblue", "darkblue"),
-      domain = NULL
-    )
-  ) %>%
-  cols_align(
-    align = "center",
-    columns = c(rank, num_postings)
-  ) %>%
-  tab_options(
-    table.font.size = px(13),
-    heading.title.font.size = px(18),
-    heading.subtitle.font.size = px(13)
-  )
+top_titles %\>% gt() %\>% cols_label( rank = "Rank", job_title = "Job Title", num_postings = "Number of Postings" ) %\>% tab_header( title = "Top 6 Job Titles in the U.S.", subtitle = "Based on AI & Data Science Job Listings" ) %\>% fmt_number( columns = num_postings, decimals = 0, use_seps = TRUE ) %\>% data_color( columns = num_postings, colors = col_numeric( palette = c("lightblue", "darkblue"), domain = NULL ) ) %\>% cols_align( align = "center", columns = c(rank, num_postings) ) %\>% tab_options( table.font.size = px(13), heading.title.font.size = px(18), heading.subtitle.font.size = px(13) )
+
 
 ### Most popular skills 2020 vs. 2025
 
@@ -170,6 +132,10 @@ summary_skills <- jobs_skills %>%
   arrange(desc(count)) %>%
   mutate(column=factor(column,levels = column))  # lock cells in order
 
+#Count jobs and skills captured
+Total_jobs <- jobs_skills %>% filter(posted_year == selected_year) %>% nrow()
+  cat("Total jobs captured in", selected_year, ":", Total_jobs, "\n")
+  cat("Total non-NA entries in", selected_year, ":", summary_skills$total[1], "\n\n")
 
 #plot
 
@@ -202,20 +168,6 @@ plot_popular_skill(jobs_skills,2025)
 ```
 
 Unfortunately, some of the job postings did not have matching skillsets called out in the skills database.
-
-```{r}
- 
-Total_jobs <- jobs_skills %>% filter(posted_year == 2020) %>% nrow()
-cat("Total jobs captured in 2020:", Total_jobs)
-cat("\n")
-cat("Total non-NA entries in 2020:", summary_skills$total[1])
-cat("\n")
-cat("\n")
-Total_jobs <- jobs_skills %>% filter(posted_year == 2025) %>% nrow()
-cat("Total jobs captured in 2025:", Total_jobs)
-cat("\n")
-cat("Total non-NA entries in 2025:", summary_skills$total[1])
-```
 
 ### Skills by city/location
 
