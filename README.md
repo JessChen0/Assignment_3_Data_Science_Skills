@@ -1,8 +1,8 @@
 Data Science Skills: Character Manipulation and Regex
-DATA607 Assignment 3 | CUNY Master of Data Science
+DATA607 Assignment 3 (TEAM ASSIGNMENT) | CUNY Master of Data Science
 
 📌 Project Overview
-This project focuses on the "art" of data cleaning—specifically the extraction and transformation of unstructured text data into structured formats. Using R and the stringr library, I address common challenges in data science, such as identifying patterns in character strings, normalizing name formats, and utilizing Regular Expressions (Regex) to automate data auditing.
+This project focuses on the "art" of data cleaning—specifically the extraction and transformation of unstructured text data into structured formats. This project demonstrates asychronous teaming and workflow. Using R and the stringr library, we address common challenges in data science, such as identifying patterns in character strings, normalizing name formats, and utilizing Regular Expressions (Regex) to automate data auditing.
 
 📊 Learning Objectives
 Text Normalization: Automating the transformation of varied name formats (e.g., "First Last" vs. "Last, First").
@@ -17,8 +17,6 @@ Language: R
 Libraries: tidyverse, stringr
 
 Key Techniques: * Regex Backreferences: Using \1, \2, etc., to identify repeating patterns in strings.
-
-Vectorized String Operations: Efficiently processing character vectors without loops.
 
 💡 Practical Applications for Governance
 While this is a technical assignment, the skills demonstrated here are critical for AI Governance and Risk Management:
